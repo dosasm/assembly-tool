@@ -1,0 +1,26 @@
+# 📖 https://gohugo.io/hosting-and-deployment/hosting-on-github/
+name: github pages
+
+on:
+  push:
+    branches:
+      - main  # Set a branch to deploy
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: create jsdos bundles
+        working-directory: .
+        run: |
+          sh compress.sh
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
